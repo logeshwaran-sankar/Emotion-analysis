@@ -7,7 +7,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import LabelEncoder
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.metrics import (
+    accuracy_score, classification_report,
+    confusion_matrix, roc_curve, auc
+)
+from sklearn.preprocessing import label_binarize
 
 # =====================================================
 # PART 1: EMOTION PREDICTION (MULTI-CLASS)
@@ -113,6 +117,27 @@ plt.tight_layout()
 plt.savefig('confusion_matrix.png', dpi=300 ,bbox_inches='tight')
 plt.show()
 
+# -------- ROC & AUC: Emotion (Multiclass) --------
+y_test_e_bin = label_binarize(y_test_e, classes=range(len(emotion_le.classes_)))
+n_classes_e = y_test_e_bin.shape[1]
+
+y_score_e = emotion_model.predict_proba(X_test_e_vec)
+
+plt.figure(figsize=(8, 6))
+for i in range(n_classes_e):
+    fpr, tpr, _ = roc_curve(y_test_e_bin[:, i], y_score_e[:, i])
+    roc_auc = auc(fpr, tpr)
+    plt.plot(fpr, tpr, lw=2, label=f"{emotion_le.classes_[i]} (AUC = {roc_auc:.2f})")
+
+plt.plot([0, 1], [0, 1], 'k--')
+plt.title("Emotion ROC Curves (Multiclass)")
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.legend(loc="lower right")
+plt.tight_layout()
+plt.savefig("emotion_roc_auc.png", dpi=300)
+plt.show()
+
 # -------- Save emotion model --------
 joblib.dump(emotion_model, "emotion_model.pkl")
 joblib.dump(emotion_vectorizer, "emotion_vectorizer.pkl")
@@ -173,6 +198,24 @@ plt.xlabel("Predicted")
 plt.ylabel("Actual")
 plt.tight_layout()
 plt.savefig('depression_confusion_matrix.png', dpi=300 ,bbox_inches='tight')
+plt.show()
+
+# -------- ROC & AUC: Depression (Binary) --------
+y_score_d = dep_model.predict_proba(X_test_d_vec)[:, 1]
+
+fpr_d, tpr_d, _ = roc_curve(y_test_d, y_score_d)
+roc_auc_d = auc(fpr_d, tpr_d)
+
+plt.figure(figsize=(6, 5))
+plt.plot(fpr_d, tpr_d, color="darkorange", lw=2,
+         label=f"Depression ROC (AUC = {roc_auc_d:.2f})")
+plt.plot([0, 1], [0, 1], color="navy", lw=2, linestyle="--")
+plt.title("Depression ROC Curve")
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.legend(loc="lower right")
+plt.tight_layout()
+plt.savefig("depression_roc_auc.png", dpi=300)
 plt.show()
 
 # -------- Save depression model --------
