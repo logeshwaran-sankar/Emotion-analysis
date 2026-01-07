@@ -120,13 +120,13 @@ def load_models():
     """Load emotion and depression models"""
     try:
         # Load emotion models
-        emotion_model = joblib.load("Emotion-analysis/emotion_model.pkl")
-        emotion_vectorizer = joblib.load("Emotion-analysis/emotion_vectorizer.pkl")
-        emotion_le = joblib.load("Emotion-analysis/emotion_label_encoder.pkl")
+        emotion_model = joblib.load(r"models\emotion_model.pkl")
+        emotion_vectorizer = joblib.load(r"models\emotion_vectorizer.pkl")
+        emotion_le = joblib.load(r"models\emotion_label_encoder.pkl")
         
         # Load depression models
-        depression_model = joblib.load("Emotion-analysis/depression_model.pkl")
-        depression_vectorizer = joblib.load("Emotion-analysis/depression_vectorizer.pkl")
+        depression_model = joblib.load(r"models\depression_model.pkl")
+        depression_vectorizer = joblib.load(r"models\depression_vectorizer.pkl")
         
         st.sidebar.success("✅ All models loaded successfully!")
         return (emotion_model, emotion_vectorizer, emotion_le, 
