@@ -191,11 +191,11 @@ emotion_colors = {
 }
 
 emotion_icons = {
-    'anger': '😠',
+    'anger': '😡',
     'disgust': '🤮', 
     'fear': '😨',
     'happy': '😊',
-    'joy': '😂',
+    'joy': '😊',
     'neutral': '😐',
     'sad': '😔',
     'sadness': '😔',
